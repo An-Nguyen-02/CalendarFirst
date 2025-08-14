@@ -1,22 +1,15 @@
 import React from 'react';
 import { ShoppingCart, Bell, User } from 'lucide-react';
-import type { Notification, CartItem } from '../types';
+import { useAppContext } from '../context/useAppContext';
 
-interface HeaderProps {
-  cart: CartItem[];
-  notifications: Notification[];
-  showNotifications: boolean;
-  setShowNotifications: (show: boolean) => void;
-  setActiveTab: (tab: 'dashboard' | 'cart') => void;
-}
-
-const Header: React.FC<HeaderProps> = ({
-  cart,
-  notifications,
-  showNotifications,
-  setShowNotifications,
-  setActiveTab
-}) => {
+const Header: React.FC = () => {
+  const {
+    cart,
+    notifications,
+    showNotifications,
+    setShowNotifications,
+    setActiveTab
+  } = useAppContext();
   const unreadNotifications = notifications.filter(n => !n.read);
 
   return (

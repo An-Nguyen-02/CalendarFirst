@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { UserEvent, Notification, Product, InventoryState } from '../types';
 
 interface UseKafkaEventStreamProps {
@@ -15,6 +15,11 @@ export const useKafkaEventStream = ({
   products
 }: UseKafkaEventStreamProps) => {
   const [isStreaming, setIsStreaming] = useState(false);
+
+  // Stabilize the setter functions to prevent unnecessary re-renders
+  const setUserEventsStable = useCallback(setUserEvents, []);
+  const setNotificationsStable = useCallback(setNotifications, []);
+  const setInventoryStable = useCallback(setInventory, []);
 
   useEffect(() => {
     const startStream = () => {
@@ -34,7 +39,7 @@ export const useKafkaEventStream = ({
           sessionId: `session_${Math.floor(Math.random() * 1000)}`
         };
         
-        setUserEvents(prev => [newEvent, ...prev.slice(0, 49)]); // Keep last 50 events
+        setUserEventsStable(prev => [newEvent, ...prev.slice(0, 49)]); // Keep last 50 events
         
         // Generate notifications for important events
         if (newEvent.type === 'purchase') {
@@ -46,10 +51,10 @@ export const useKafkaEventStream = ({
             type: 'purchase',
             read: false
           };
-          setNotifications(prev => [notification, ...prev.slice(0, 19)]);
+          setNotificationsStable(prev => [notification, ...prev.slice(0, 19)]);
           
           // Update inventory
-          setInventory(prev => ({
+          setInventoryStable(prev => ({
             ...prev,
             [newEvent.productId]: Math.max(0, (prev[newEvent.productId] || 0) - 1)
           }));
@@ -58,7 +63,7 @@ export const useKafkaEventStream = ({
         // Low stock notifications
         if (Math.random() > 0.95) { // Occasional inventory updates
           const randomProductId = productIds[Math.floor(Math.random() * productIds.length)];
-          setInventory(currentInventory => {
+          setInventoryStable(currentInventory => {
             const currentStock = currentInventory[randomProductId] || 0;
             if (currentStock < 10 && currentStock > 0) {
               const product = products.find(p => p.id === randomProductId);
@@ -69,7 +74,7 @@ export const useKafkaEventStream = ({
                 type: 'inventory',
                 read: false
               };
-              setNotifications(prev => [notification, ...prev.slice(0, 19)]);
+              setNotificationsStable(prev => [notification, ...prev.slice(0, 19)]);
             }
             return currentInventory;
           });
@@ -84,7 +89,7 @@ export const useKafkaEventStream = ({
 
     const cleanup = startStream();
     return cleanup;
-  }, [setUserEvents, setNotifications, setInventory, products]);
+  }, [setUserEventsStable, setNotificationsStable, setInventoryStable, products]);
 
   return { isStreaming };
 }; 

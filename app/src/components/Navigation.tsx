@@ -1,14 +1,9 @@
 import React from 'react';
 import { ShoppingCart, TrendingUp } from 'lucide-react';
-import type { TabType, CartItem } from '../types';
+import { useAppContext } from '../context/useAppContext';
 
-interface NavigationProps {
-  activeTab: TabType;
-  setActiveTab: (tab: TabType) => void;
-  cart: CartItem[];
-}
-
-const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab, cart }) => {
+const Navigation: React.FC = () => {
+  const { activeTab, setActiveTab, cart } = useAppContext();
   const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (

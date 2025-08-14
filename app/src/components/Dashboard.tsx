@@ -1,20 +1,10 @@
 import React from 'react';
 import { ShoppingCart, Users, TrendingUp, Star, Activity, Eye, DollarSign } from 'lucide-react';
-import type { Product, UserEvent, InventoryState } from '../types';
+import { useAppContext } from '../context/useAppContext';
+import type { UserEvent } from '../types';
 
-interface DashboardProps {
-  products: Product[];
-  userEvents: UserEvent[];
-  inventory: InventoryState;
-  addToCart: (product: Product) => void;
-}
-
-const Dashboard: React.FC<DashboardProps> = ({
-  products,
-  userEvents,
-  inventory,
-  addToCart
-}) => {
+const Dashboard: React.FC = () => {
+  const { products, userEvents, inventory, addToCart } = useAppContext();
   const getEventTypeColor = (type: UserEvent['type']): string => {
     switch (type) {
       case 'purchase': return 'bg-emerald-500';

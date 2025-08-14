@@ -1,14 +1,9 @@
 import React from 'react';
 import { ShoppingCart, Plus, Minus, DollarSign } from 'lucide-react';
-import type { CartItem, Product } from '../types';
+import { useAppContext } from '../context/useAppContext';
 
-interface CartProps {
-  cart: CartItem[];
-  removeFromCart: (productId: number) => void;
-  addToCart: (product: Product) => void;
-}
-
-const Cart: React.FC<CartProps> = ({ cart, removeFromCart, addToCart }) => {
+const Cart: React.FC = () => {
+  const { cart, removeFromCart, addToCart } = useAppContext();
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
