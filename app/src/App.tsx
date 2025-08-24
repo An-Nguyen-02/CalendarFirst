@@ -1,12 +1,14 @@
-import './App.css'
-import SocialCommercePlatform from './SocialCommercePlatform'
-import { AppProvider } from './context/AppContext'
+import './App.css';
+import NavigationBar from './components/NavigationBar/NavigationBar.tsx';
+import Calendar from './components/Calendar/Calendar.tsx';
 
 function App() {
+
   return (
-    <AppProvider>
-      <SocialCommercePlatform />
-    </AppProvider>
+    <>
+      <NavigationBar />
+      <Calendar />
+    </>
   )
 }
 

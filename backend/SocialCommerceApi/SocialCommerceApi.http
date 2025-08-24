@@ -1,6 +1,0 @@
-@SocialCommerceApi_HostAddress = http://localhost:5022
-
-GET {{SocialCommerceApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

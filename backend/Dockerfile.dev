@@ -1,0 +1,18 @@
+# 1. Use OpenJDK with Maven
+FROM maven:3.9.6-eclipse-temurin-17 AS dev
+
+# 2. Set work directory inside container
+WORKDIR /app
+
+# 3. Cache dependencies first (this layer will not rebuild unless pom.xml changes)
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# 4. Copy source code
+COPY src ./src
+
+# 5. Expose app port
+EXPOSE 8080
+
+# 6. Run Spring Boot in dev mode
+CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Xmx512m -Xms256m"]
