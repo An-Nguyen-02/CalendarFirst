@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { FC } from 'react';
 import { Calendar as ReactCalendar, dateFnsLocalizer } from 'react-big-calendar';
-import type { Event } from '../../types/types';
+import type { Event } from '../../types/types.ts';
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import type { withDragAndDropProps } from 'react-big-calendar/lib/addons/dragAndDrop';
 import { format, parse, startOfWeek, getDay, addHours, startOfHour } from 'date-fns'

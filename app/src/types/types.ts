@@ -6,3 +6,10 @@ export interface Event extends RBCEvent {
   end: Date,
   title: string
 }
+
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  roles: string[];
+}
