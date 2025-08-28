@@ -37,7 +37,7 @@ export default function Login() {
         <Button type="submit" fullWidth variant="contained" sx={{ mt: 2, mb: 2 }} disabled={mutation.status === 'pending'}>
           {mutation.status === 'pending' ? 'Logging in...' : 'Login'}
         </Button>
-        <Link component={RouterLink} to="/signup" variant="body2">Don’t have an account? Sign Up</Link>
+        <Link component={RouterLink} to="/signup" variant="body2">Don't have an account? Sign Up</Link>
       </Box>
     </Container>
   );
