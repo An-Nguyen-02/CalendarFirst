@@ -1,14 +1,16 @@
 // api/auth.ts
 import type { User } from "../types/types";
+// Use import.meta.env for Vite, or define REACT_APP_API_URL in your .env and use process.env only in Node
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export async function fetchCurrentUser(): Promise<User> {
-  const res = await fetch('/api/auth/me', { credentials: 'include' });
+  const res = await fetch(`${apiUrl}/api/auth/me`, { credentials: 'include' });
   if (!res.ok) throw new Error('Not authenticated');
   return res.json();
 }
 
 export async function loginUser(data: { username: string; password: string }) {
-  const res = await fetch('/api/auth/login', {
+  const res = await fetch(`${apiUrl}/api/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',
@@ -19,7 +21,7 @@ export async function loginUser(data: { username: string; password: string }) {
 }
 
 export async function signupUser(data: { username: string; email: string; password: string }) {
-  const res = await fetch('/api/auth/signup', {
+  const res = await fetch(`${apiUrl}/api/auth/signup`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -29,7 +31,7 @@ export async function signupUser(data: { username: string; email: string; passwo
 }
 
 export async function logoutUser() {
-  const res = await fetch('/api/auth/logout', {
+  const res = await fetch(`${apiUrl}/api/auth/logout`, {
     method: 'POST',
     credentials: 'include',
   });
