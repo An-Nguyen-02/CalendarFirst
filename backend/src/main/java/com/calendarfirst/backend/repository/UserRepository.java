@@ -1,4 +1,4 @@
-package com.yourorg.calendarfirst.auth;
+package com.calendarfirst.backend.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.calendarfirst.backend.model.User;

@@ -2,7 +2,7 @@ package com.calendarfirst.backend.service;
 
 import com.calendarfirst.backend.model.User;
 import com.calendarfirst.backend.repository.UserRepository;
-import com.calendarfirst.backend.auth.VerificationToken;
+import com.calendarfirst.backend.model.VerificationToken;
 import com.calendarfirst.backend.repository.VerificationTokenRepository;
 
 import org.springframework.mail.SimpleMailMessage;
