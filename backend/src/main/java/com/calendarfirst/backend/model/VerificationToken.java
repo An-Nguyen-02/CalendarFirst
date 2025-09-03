@@ -1,14 +1,13 @@
 package com.calendarfirst.backend.auth;
 
+import com.calendarfirst.backend.model.User;
 import jakarta.persistence.*;
 import java.time.Instant;
-import java.util.UUID;
 
 @Entity
 @Table(name = "verification_tokens", indexes = {@Index(name="idx_verif_token_hash", columnList = "tokenHash")})
 public class VerificationToken {
     @Id
-    @GeneratedValue
     private UUID id;
 
     @Column(nullable = false, length = 64) // SHA-256 hex length
