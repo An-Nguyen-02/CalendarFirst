@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
 import java.time.Instant;
+import org.springframework.scheduling.annotation.Scheduled;
 
 @Service
 public class RegistrationService {
@@ -52,5 +53,32 @@ public class RegistrationService {
         message.setSubject("Verify your email");
         message.setText("Click here to verify: https://your-app.com/verify?token=" + token);
         mailSender.send(message);
+    }
+
+    public void verifyUser(String tokenHash) {
+        Optional<VerificationToken> optionalToken = tokenRepository.findByTokenHash(tokenHash);
+
+        if (optionalToken.isEmpty()) {
+            throw new IllegalArgumentException("Invalid token.");
+        }
+
+        VerificationToken token = optionalToken.get();
+
+        if (token.getExpiresAt().isBefore(Instant.now())) {
+            throw new IllegalArgumentException("Token expired.");
+        }
+
+        User user = token.getUser();
+        user.setVerifiedEmail(true);
+        userRepository.save(user);
+
+        tokenRepository.deleteByTokenHash(tokenHash);
+    }
+        
+    @Scheduled(cron = "0 0 * * * *") // every hour
+    public void cleanupExpiredTokens() {
+        Instant now = Instant.now();
+        tokenRepository.deleteByExpiresAtBefore(now);
+        System.out.println("Expired tokens cleaned up at " + now);
     }
 }

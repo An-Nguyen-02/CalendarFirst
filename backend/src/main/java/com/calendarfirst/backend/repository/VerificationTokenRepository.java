@@ -8,4 +8,8 @@ import java.util.UUID;
 
 public interface VerificationTokenRepository extends JpaRepository<VerificationToken, UUID> {
     Optional<VerificationToken> findByTokenHash(String tokenHash);
+
+    void deleteByTokenHash(String tokenHash);
+
+    void deleteByExpiresAtBefore(Instant now);
 }
