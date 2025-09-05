@@ -2,7 +2,7 @@ package com.calendarfirst.backend.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.calendarfirst.backend.dto.SignupRequest;
+import com.calendarfirst.dto.SignupRequest;
 import com.calendarfirst.backend.model.User;
 import com.calendarfirst.backend.service.RegistrationService;
 
@@ -21,11 +21,10 @@ public class AuthController {
         try {
             // Create a new user entity
             User user = new User();
-            user.setUsername(signupRequest.getUsername());
+            user.setName(signupRequest.getUsername());
             user.setEmail(signupRequest.getEmail());
             user.setPassword(signupRequest.getPassword());
 
-            // Register the user
             registrationService.registerUser(user);
 
             return ResponseEntity.ok()

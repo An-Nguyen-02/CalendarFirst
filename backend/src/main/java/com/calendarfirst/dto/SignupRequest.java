@@ -1,4 +1,4 @@
-package com.calendarfirst.backend.dto;
+package com.calendarfirst.dto;
 
 public class SignupRequest {
     private String username;

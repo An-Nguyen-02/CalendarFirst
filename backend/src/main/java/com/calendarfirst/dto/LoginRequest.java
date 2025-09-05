@@ -1,4 +1,4 @@
-package com.calendarfirst.backend.dto;
+package com.calendarfirst.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

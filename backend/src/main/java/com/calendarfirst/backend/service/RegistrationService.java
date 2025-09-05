@@ -9,6 +9,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 import java.util.UUID;
 import java.time.Instant;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -69,7 +71,7 @@ public class RegistrationService {
         }
 
         User user = token.getUser();
-        user.setVerifiedEmail(true);
+        user.setEmailVerified(true);
         userRepository.save(user);
 
         tokenRepository.deleteByTokenHash(tokenHash);
