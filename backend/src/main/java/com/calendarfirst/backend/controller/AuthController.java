@@ -2,6 +2,8 @@ package com.calendarfirst.backend.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.calendarfirst.dto.LoginRequest;
 import com.calendarfirst.dto.SignupRequest;
 import com.calendarfirst.backend.model.User;
 import com.calendarfirst.backend.service.RegistrationService;
@@ -37,6 +39,12 @@ public class AuthController {
             return ResponseEntity.status(500)
                 .body("{\"error\": \"Internal server error: " + e.getMessage() + "\"}");
         }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        // Login is handled by Spring Security filter, this endpoint won't be called
+        return ResponseEntity.status(501).body("{\"error\": \"Not implemented.\"}");
     }
 
     @GetMapping("/verify")
