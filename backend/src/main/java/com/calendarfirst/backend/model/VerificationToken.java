@@ -1,6 +1,5 @@
 package com.calendarfirst.backend.model;
 
-import com.calendarfirst.backend.model.User;
 import jakarta.persistence.*;
 import java.time.Instant;
 

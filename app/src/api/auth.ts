@@ -21,7 +21,7 @@ export async function loginUser(data: { username: string; password: string }) {
 }
 
 export async function signupUser(data: { username: string; email: string; password: string }) {
-  const res = await fetch(`${apiUrl}/api/auth/signup`, {
+  const res = await fetch(`${apiUrl}/api/signup`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -31,7 +31,7 @@ export async function signupUser(data: { username: string; email: string; passwo
 }
 
 export async function logoutUser() {
-  const res = await fetch(`${apiUrl}/api/auth/logout`, {
+  const res = await fetch(`${apiUrl}/api/logout`, {
     method: 'POST',
     credentials: 'include',
   });

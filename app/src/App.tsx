@@ -6,7 +6,7 @@ import LoadingIndicator from './components/common/LoadingIndicator';
 
 const Calendar = lazy(() => import('./components/Calendar/Calendar.tsx'));
 const Login = lazy(() => import('./components/Login/Login.tsx'));
-
+const SignUp = lazy(() => import('./components/Signup/Signup.tsx'));
 
 function App() {
   return (
@@ -20,6 +20,7 @@ function App() {
             <Route path="/calendar" element={<Calendar />} />
           </Route>
         <Route path="*" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
     </Suspense>
   )

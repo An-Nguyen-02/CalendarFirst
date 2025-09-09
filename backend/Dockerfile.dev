@@ -15,4 +15,5 @@ COPY src ./src
 EXPOSE 8080
 
 # 6. Run Spring Boot in dev mode
-CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments=-Xmx512m -Xms256m"]
+CMD ["mvn", "spring-boot:run"]
+
