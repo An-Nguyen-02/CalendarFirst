@@ -3,6 +3,8 @@ package com.calendarfirst.backend.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 import com.calendarfirst.dto.LoginRequest;
 import com.calendarfirst.dto.SignupRequest;
 import com.calendarfirst.backend.model.User;
@@ -43,8 +45,33 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        // Login is handled by Spring Security filter, this endpoint won't be called
-        return ResponseEntity.status(501).body("{\"error\": \"Not implemented.\"}");
+        try {
+            // Find user by email
+            Optional<User> optionalUser = registrationService.findByEmail(loginRequest.getUsername());
+            if (!optionalUser.isPresent()) {
+                return ResponseEntity.status(401)
+                    .body("{\"error\": \"Invalid credentials.\"}");
+            }
+            User user = optionalUser.get();
+
+            // Check password (assuming passwords are hashed)
+            if (!registrationService.checkPassword(loginRequest.getPassword(), user.getPassword())) {
+                return ResponseEntity.status(401)
+                    .body("{\"error\": \"Invalid credentials.\"}");
+            }
+
+            // Optionally: generate and return a session/token here
+
+            return ResponseEntity.ok()
+                .header("Content-Type", "application/json")
+                .body("{\"message\": \"Login successful.\"}");
+
+        } catch (Exception e) {
+            System.err.println("Error in login endpoint: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500)
+                .body("{\"error\": \"Internal server error: " + e.getMessage() + "\"}");
+        }
     }
 
     @GetMapping("/verify")

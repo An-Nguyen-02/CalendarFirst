@@ -36,17 +36,19 @@ public class RegistrationService {
     public void registerUser(User user) {
         // Hash the password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        // Disable later when an email server actually implemented
+        user.setEmailVerified(true);
         userRepository.save(user);
 
         // Generate a verification token
-        VerificationToken token = new VerificationToken();
-        token.setUser(user);
-        token.setTokenHash(UUID.randomUUID().toString());
-        token.setExpiresAt(Instant.now().plusSeconds(3600));
-        tokenRepository.save(token);
+        // VerificationToken token = new VerificationToken();
+        // token.setUser(user);
+        // token.setTokenHash(UUID.randomUUID().toString());
+        // token.setExpiresAt(Instant.now().plusSeconds(3600));
+        // tokenRepository.save(token);
 
         // Send verification email
-        sendVerificationEmail(user.getEmail(), token.getTokenHash());
+        // sendVerificationEmail(user.getEmail(), token.getTokenHash());
     }
 
     private void sendVerificationEmail(String email, String token) {
@@ -82,5 +84,13 @@ public class RegistrationService {
         Instant now = Instant.now();
         tokenRepository.deleteByExpiresAtBefore(now);
         System.out.println("Expired tokens cleaned up at " + now);
+    }
+
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public boolean checkPassword(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 }
