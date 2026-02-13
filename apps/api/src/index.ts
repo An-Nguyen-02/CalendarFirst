@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import pino from "pino";
+import { prisma } from "./lib/prisma";
 
 const PORT = 4000;
 
@@ -53,6 +54,24 @@ app.get("/health", (_req: Request, res: Response) => {
     status: "ok",
     timestamp: new Date().toISOString(),
   });
+});
+
+app.get("/health/db", async (_req: Request, res: Response) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.status(200).json({
+      status: "ok",
+      database: "connected",
+      timestamp: new Date().toISOString(),
+    });
+  } catch (err) {
+    logger.error({ err }, "Database health check failed");
+    res.status(500).json({
+      status: "error",
+      database: "disconnected",
+      timestamp: new Date().toISOString(),
+    });
+  }
 });
 
 app.listen(PORT, () => {

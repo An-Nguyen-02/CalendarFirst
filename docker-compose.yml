@@ -1,8 +1,8 @@
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:16
     ports:
-      - "5432:5432"
+      - "5434:5432"
     environment:
       POSTGRES_USER: calsync
       POSTGRES_PASSWORD: calsync

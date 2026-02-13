@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String     @id @default(uuid())
+  email        String     @unique
+  passwordHash String     @map("password_hash")
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  ownedOrgs   Org[]       @relation("OrgOwner")
+  orgMembers  OrgMember[]
+
+  @@map("users")
+}
+
+model Org {
+  id           String     @id @default(uuid())
+  name         String
+  ownerUserId  String     @map("owner_user_id")
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  owner   User        @relation("OrgOwner", fields: [ownerUserId], references: [id], onDelete: Cascade)
+  members OrgMember[]
+  events  Event[]
+
+  @@map("orgs")
+}
+
+model OrgMember {
+  orgId   String   @map("org_id")
+  userId  String   @map("user_id")
+  role    String   // ORGANIZER | ADMIN
+  joinedAt DateTime @default(now()) @map("joined_at")
+
+  org  Org  @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([orgId, userId])
+  @@map("org_members")
+}
+
+model Event {
+  id          String   @id @default(uuid())
+  orgId       String   @map("org_id")
+  title       String
+  description String?
+  startAt     DateTime @map("start_at")
+  endAt       DateTime @map("end_at")
+  venue       String?
+  status      String   // DRAFT | PUBLISHED
+  capacity    Int?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  org Org @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@map("events")
+}
