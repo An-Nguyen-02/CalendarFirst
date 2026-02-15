@@ -4,11 +4,11 @@ import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
 
 async function main() {
-  const passwordHash = await bcrypt.hash("demo123", 10);
+  const passwordHash = await bcrypt.hash("demo1234", 10);
 
   const user = await prisma.user.upsert({
     where: { email: "demo@calsync.test" },
-    update: {},
+    update: { passwordHash },
     create: {
       email: "demo@calsync.test",
       passwordHash,
@@ -75,7 +75,7 @@ async function main() {
     },
   });
 
-  console.log("Seeded: demo user (demo@calsync.test / demo123), org, and 2 events.");
+  console.log("Seeded: demo user (demo@calsync.test / demo1234), org, and 2 events.");
 }
 
 main()

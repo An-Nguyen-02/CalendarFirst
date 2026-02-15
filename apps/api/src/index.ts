@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import pino from "pino";
 import { prisma } from "./lib/prisma";
+import authRoutes from "./routes/auth";
 
 const PORT = 4000;
 
@@ -48,6 +49,8 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
+
+app.use("/auth", authRoutes);
 
 app.get("/health", (_req: Request, res: Response) => {
   res.status(200).json({
