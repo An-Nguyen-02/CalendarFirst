@@ -1,20 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { JwtPayload } from "../types/express";
 
 const JWT_SECRET = process.env.JWT_SECRET ?? "fallback-secret";
-
-export interface JwtPayload {
-  sub: string;
-  email: string;
-}
-
-declare global {
-  namespace Express {
-    interface Request {
-      user?: JwtPayload;
-    }
-  }
-}
 
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
   const auth = req.headers.authorization;
