@@ -12,6 +12,11 @@ enum OrgRole {
   ADMIN
 }
 
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+}
+
 model User {
   id           String     @id @default(uuid())
   email        String     @unique
@@ -73,7 +78,7 @@ model Event {
   startAt     DateTime @map("start_at")
   endAt       DateTime @map("end_at")
   venue       String?
-  status      String   // DRAFT | PUBLISHED
+  status      EventStatus
   capacity    Int?
   createdAt   DateTime @default(now()) @map("created_at")
 

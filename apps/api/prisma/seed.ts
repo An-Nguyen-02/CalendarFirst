@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { EventStatus, PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
@@ -54,7 +54,7 @@ async function main() {
       startAt: tomorrow,
       endAt: new Date(tomorrow.getTime() + 2 * 60 * 60 * 1000),
       venue: "Conference Room A",
-      status: "PUBLISHED",
+      status: EventStatus.PUBLISHED,
       capacity: 50,
     },
   });
@@ -70,7 +70,7 @@ async function main() {
       startAt: nextWeek,
       endAt: new Date(nextWeek.getTime() + 90 * 60 * 1000),
       venue: "Online",
-      status: "DRAFT",
+      status: EventStatus.DRAFT,
       capacity: 100,
     },
   });
