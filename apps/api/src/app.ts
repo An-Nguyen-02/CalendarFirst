@@ -3,6 +3,7 @@ import pino from "pino";
 import { prisma } from "./lib/prisma";
 import authRoutes from "./routes/auth";
 import orgRoutes from "./routes/org";
+import orderRoutes from "./routes/order";
 import { publicEventRouter } from "./routes/event";
 
 const logger = pino({
@@ -49,6 +50,7 @@ app.use(express.json());
 
 app.use("/auth", authRoutes);
 app.use("/orgs", orgRoutes);
+app.use("/orders", orderRoutes);
 app.use("/events", publicEventRouter);
 
 app.get("/health", (_req: Request, res: Response) => {

@@ -59,7 +59,7 @@ async function main() {
     },
   });
 
-  await prisma.event.upsert({
+  const draftEvent = await prisma.event.upsert({
     where: { id: "00000000-0000-0000-0000-000000000003" },
     update: {},
     create: {
@@ -75,7 +75,35 @@ async function main() {
     },
   });
 
-  console.log("Seeded: demo user (demo@calsync.test / demo1234), org, and 2 events.");
+  const publishedEventId = "00000000-0000-0000-0000-000000000002";
+  await prisma.ticketType.upsert({
+    where: { id: "00000000-0000-0000-0000-000000000004" },
+    update: {},
+    create: {
+      id: "00000000-0000-0000-0000-000000000004",
+      eventId: publishedEventId,
+      name: "General Admission",
+      priceCents: 1500,
+      currency: "USD",
+      quantityTotal: 50,
+      quantitySold: 0,
+    },
+  });
+  await prisma.ticketType.upsert({
+    where: { id: "00000000-0000-0000-0000-000000000005" },
+    update: {},
+    create: {
+      id: "00000000-0000-0000-0000-000000000005",
+      eventId: publishedEventId,
+      name: "VIP",
+      priceCents: 5000,
+      currency: "USD",
+      quantityTotal: 10,
+      quantitySold: 0,
+    },
+  });
+
+  console.log("Seeded: demo user (demo@calsync.test / demo1234), org, 2 events, 2 ticket types for published event.");
 }
 
 main()
