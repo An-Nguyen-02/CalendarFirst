@@ -126,3 +126,27 @@ export async function getOrderById(orderId: string, userId: string) {
     include: { items: { include: { ticketType: true } }, event: true },
   });
 }
+
+export async function markOrderPaid(orderId: string) {
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+  });
+  if (!order || order.status !== OrderStatus.CREATED) {
+    return null;
+  }
+  return await prisma.order.update({
+    where: { id: orderId },
+    data: { status: OrderStatus.PAID },
+  });
+}
+
+export async function createPayment(
+  orderId: string,
+  provider: string,
+  providerRef: string,
+  status: string
+) {
+  return await prisma.payment.create({
+    data: { orderId, provider, providerRef, status },
+  });
+}

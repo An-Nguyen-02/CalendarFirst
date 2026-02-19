@@ -122,13 +122,28 @@ model Order {
   totalCents Int         @map("total_cents")
   createdAt  DateTime    @default(now()) @map("created_at")
 
-  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  event Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  items OrderItem[]
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event    Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  items    OrderItem[]
+  payments Payment[]
 
   @@index([userId])
   @@index([eventId])
   @@map("orders")
+}
+
+model Payment {
+  id          String   @id @default(uuid())
+  orderId     String   @map("order_id")
+  provider    String
+  providerRef String   @map("provider_ref")
+  status      String
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@map("payments")
 }
 
 model OrderItem {

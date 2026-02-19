@@ -4,6 +4,7 @@ import { prisma } from "./lib/prisma";
 import authRoutes from "./routes/auth";
 import orgRoutes from "./routes/org";
 import orderRoutes from "./routes/order";
+import stripeWebhookRoutes from "./routes/stripeWebhook";
 import { publicEventRouter } from "./routes/event";
 
 const logger = pino({
@@ -46,6 +47,11 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(
+  "/webhooks/stripe",
+  express.raw({ type: "application/json" }),
+  stripeWebhookRoutes
+);
 app.use(express.json());
 
 app.use("/auth", authRoutes);

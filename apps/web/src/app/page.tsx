@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
 
 type Health = { status: string; timestamp?: string } | null;
 
 export default function Home() {
+  const { user, isLoading: authLoading } = useAuth();
   const [apiHealth, setApiHealth] = useState<Health>(null);
   const [loading, setLoading] = useState(true);
 
@@ -17,9 +20,43 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-center gap-8 py-32 px-16 bg-white dark:bg-black">
-        <h1 className="text-3xl font-semibold tracking-tight text-black dark:text-zinc-50">
+    <div className="flex min-h-screen flex-col bg-zinc-50 font-sans dark:bg-zinc-950">
+      <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="mx-auto flex max-w-3xl items-center justify-end gap-4 px-4 py-4">
+          {!authLoading &&
+            (user ? (
+              <>
+                <Link
+                  href="/orders"
+                  className="text-sm font-medium text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
+                >
+                  My orders
+                </Link>
+                <Link
+                  href="/orgs"
+                  className="text-sm font-medium text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
+                >
+                  My orgs
+                </Link>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="text-sm font-medium text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
+              >
+                Sign in
+              </Link>
+            ))}
+          <Link
+            href="/events"
+            className="text-sm font-medium text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
+          >
+            Events
+          </Link>
+        </div>
+      </header>
+      <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center gap-8 px-4 py-16">
+        <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
           CalSync Events
         </h1>
         <p className="text-zinc-600 dark:text-zinc-400">
@@ -41,6 +78,12 @@ export default function Home() {
             <span className="text-red-600 dark:text-red-400">API: error</span>
           )}
         </div>
+        <Link
+          href="/events"
+          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+        >
+          Browse events
+        </Link>
       </main>
     </div>
   );

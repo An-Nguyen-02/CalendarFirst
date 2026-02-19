@@ -20,6 +20,7 @@
     "express": "^4.21",
     "jsonwebtoken": "^9.0.3",
     "pino": "^9.5",
+    "stripe": "^17.0.0",
     "zod": "^3.23.0",
     "supertest": "^7.0.0"
   },
