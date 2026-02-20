@@ -1,4 +1,5 @@
-export type User = { id: string; email: string };
+export type UserRole = "ORGANIZER" | "ATTENDEE";
+export type User = { id: string; email: string; role?: UserRole };
 
 export type LoginResponse = {
   accessToken: string;

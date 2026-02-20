@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { prisma } from "../lib/prisma";
-import type { LoginInput } from "../schemas/auth";
+import type { LoginInput, RegisterInput } from "../schemas/auth";
 
 const JWT_SECRET = process.env.JWT_SECRET ?? "fallback-secret";
 const ACCESS_EXPIRY = process.env.JWT_ACCESS_EXPIRY ?? "15m";
@@ -43,7 +43,48 @@ export async function login(input: LoginInput) {
     accessToken,
     refreshToken,
     expiresIn: ACCESS_EXPIRY,
-    user: { id: user.id, email: user.email },
+    user: { id: user.id, email: user.email, role: user.role },
+  };
+}
+
+export async function register(input: RegisterInput) {
+  const existing = await prisma.user.findUnique({
+    where: { email: input.email },
+  });
+  if (existing) return null;
+
+  const passwordHash = await bcrypt.hash(input.password, 10);
+  const user = await prisma.user.create({
+    data: {
+      email: input.email,
+      passwordHash,
+      role: input.role,
+    },
+  });
+
+  const accessToken = jwt.sign(
+    { sub: user.id, email: user.email },
+    JWT_SECRET,
+    { expiresIn: ACCESS_EXPIRY }
+  );
+
+  const refreshToken = crypto.randomUUID();
+  const refreshExpiry = new Date();
+  refreshExpiry.setDate(refreshExpiry.getDate() + 7);
+
+  await prisma.refreshToken.create({
+    data: {
+      userId: user.id,
+      tokenHash: hashToken(refreshToken),
+      expiresAt: refreshExpiry,
+    },
+  });
+
+  return {
+    accessToken,
+    refreshToken,
+    expiresIn: ACCESS_EXPIRY,
+    user: { id: user.id, email: user.email, role: user.role },
   };
 }
 
@@ -82,7 +123,7 @@ export async function refresh(refreshToken: string) {
     accessToken,
     refreshToken: newRefreshToken,
     expiresIn: ACCESS_EXPIRY,
-    user: { id: record.user.id, email: record.user.email },
+    user: { id: record.user.id, email: record.user.email, role: record.user.role },
   };
 }
 
@@ -91,5 +132,12 @@ export async function logout(refreshToken: string) {
   await prisma.refreshToken.updateMany({
     where: { tokenHash },
     data: { revokedAt: new Date() },
+  });
+}
+
+export async function getUserById(userId: string) {
+  return await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, email: true, role: true },
   });
 }

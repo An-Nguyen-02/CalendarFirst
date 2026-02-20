@@ -40,12 +40,20 @@ export default function Home() {
                 </Link>
               </>
             ) : (
-              <Link
-                href="/login"
-                className="text-sm font-medium text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
-              >
-                Sign in
-              </Link>
+              <>
+                <Link
+                  href="/login"
+                  className="text-sm font-medium text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/signup"
+                  className="text-sm font-medium text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
+                >
+                  Sign up
+                </Link>
+              </>
             ))}
           <Link
             href="/events"

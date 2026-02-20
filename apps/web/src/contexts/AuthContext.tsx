@@ -18,6 +18,7 @@ type AuthContextValue = {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string, nextUrl?: string) => Promise<void>;
+  register: (email: string, password: string, role: "ORGANIZER" | "ATTENDEE", nextUrl?: string) => Promise<void>;
   logout: () => void;
   getToken: () => string | null;
 };
@@ -113,6 +114,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [setTokens, router]
   );
 
+  const register = useCallback(
+    async (email: string, password: string, role: "ORGANIZER" | "ATTENDEE", nextUrl?: string) => {
+      const data = await apiJson<{
+        accessToken: string;
+        refreshToken: string;
+        user: User;
+      }>("/auth/register", {
+        method: "POST",
+        body: JSON.stringify({ email, password, role }),
+      });
+      setTokens(data.accessToken, data.refreshToken);
+      setUser(data.user);
+      const path = nextUrl && nextUrl.startsWith("/") ? nextUrl : "/orders";
+      router.push(path);
+    },
+    [setTokens, router]
+  );
+
   const logout = useCallback(() => {
     const refreshToken = typeof window !== "undefined" ? localStorage.getItem(REFRESH_KEY) : null;
     if (refreshToken) {
@@ -128,7 +147,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, login, logout, getToken }}
+      value={{ user, isLoading, login, register, logout, getToken }}
     >
       {children}
     </AuthContext.Provider>

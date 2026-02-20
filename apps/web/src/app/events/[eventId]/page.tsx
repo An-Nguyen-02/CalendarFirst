@@ -43,7 +43,7 @@ export default function EventDetailPage() {
   }, [eventId]);
 
   const formatDate = (s: string) =>
-    new Date(s).toLocaleDateString(undefined, {
+    new Date(s).toLocaleString(undefined, {
       dateStyle: "long",
       timeStyle: "short",
     });

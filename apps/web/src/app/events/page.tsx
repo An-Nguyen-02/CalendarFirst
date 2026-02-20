@@ -18,7 +18,7 @@ export default function EventsPage() {
   }, []);
 
   const formatDate = (s: string) =>
-    new Date(s).toLocaleDateString(undefined, {
+    new Date(s).toLocaleString(undefined, {
       dateStyle: "medium",
       timeStyle: "short",
     });

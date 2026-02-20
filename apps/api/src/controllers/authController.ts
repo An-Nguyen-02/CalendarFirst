@@ -1,6 +1,22 @@
 import { Request, Response } from "express";
-import { loginSchema, refreshSchema } from "../schemas/auth";
+import { loginSchema, refreshSchema, registerSchema } from "../schemas/auth";
 import * as authService from "../services/authService";
+
+export async function register(req: Request, res: Response) {
+  const parsed = registerSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.flatten() });
+    return;
+  }
+
+  const result = await authService.register(parsed.data);
+  if (!result) {
+    res.status(409).json({ error: "Email already registered" });
+    return;
+  }
+
+  res.status(201).json(result);
+}
 
 export async function login(req: Request, res: Response) {
   const parsed = loginSchema.safeParse(req.body);
@@ -50,5 +66,10 @@ export async function me(req: Request, res: Response) {
     res.status(401).json({ error: "Unauthorized" });
     return;
   }
-  res.status(200).json({ id: req.user.sub, email: req.user.email });
+  const user = await authService.getUserById(req.user.sub);
+  if (!user) {
+    res.status(401).json({ error: "User not found" });
+    return;
+  }
+  res.status(200).json({ id: user.id, email: user.email, role: user.role });
 }

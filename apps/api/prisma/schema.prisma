@@ -23,10 +23,16 @@ enum OrderStatus {
   CANCELLED
 }
 
+enum UserRole {
+  ORGANIZER
+  ATTENDEE
+}
+
 model User {
   id           String     @id @default(uuid())
   email        String     @unique
   passwordHash String     @map("password_hash")
+  role         UserRole   @default(ATTENDEE)
   createdAt    DateTime   @default(now()) @map("created_at")
 
   ownedOrgs      Org[]          @relation("OrgOwner")
