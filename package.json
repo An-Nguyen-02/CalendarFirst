@@ -7,6 +7,9 @@
   ],
   "scripts": {
     "dev": "npm run dev --workspaces --if-present",
-    "build": "npm run build --workspaces --if-present"
+    "build": "npm run build --workspaces --if-present",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down",
+    "stripe:listen": "stripe listen --forward-to localhost:4000/webhooks/stripe"
   }
 }
