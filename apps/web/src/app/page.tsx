@@ -32,12 +32,22 @@ export default function Home() {
                 >
                   My orders
                 </Link>
-                <Link
-                  href="/orgs"
-                  className="text-sm font-medium text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
-                >
-                  My orgs
-                </Link>
+                {user.role === "ORGANIZER" && (
+                  <>
+                    <Link
+                      href="/orgs"
+                      className="text-sm font-medium text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
+                    >
+                      My orgs
+                    </Link>
+                    <Link
+                      href="/orgs/new"
+                      className="text-sm font-medium text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
+                    >
+                      Create org
+                    </Link>
+                  </>
+                )}
               </>
             ) : (
               <>

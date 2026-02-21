@@ -22,7 +22,7 @@ export async function login(input: LoginInput) {
   if (!ok) return null;
 
   const accessToken = jwt.sign(
-    { sub: user.id, email: user.email },
+    { sub: user.id, email: user.email, role: user.role },
     JWT_SECRET,
     { expiresIn: ACCESS_EXPIRY }
   );
@@ -63,7 +63,7 @@ export async function register(input: RegisterInput) {
   });
 
   const accessToken = jwt.sign(
-    { sub: user.id, email: user.email },
+    { sub: user.id, email: user.email, role: user.role },
     JWT_SECRET,
     { expiresIn: ACCESS_EXPIRY }
   );
@@ -114,7 +114,7 @@ export async function refresh(refreshToken: string) {
   });
 
   const accessToken = jwt.sign(
-    { sub: record.user.id, email: record.user.email },
+    { sub: record.user.id, email: record.user.email, role: record.user.role },
     JWT_SECRET,
     { expiresIn: ACCESS_EXPIRY }
   );

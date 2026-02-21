@@ -47,9 +47,19 @@ function OrgsContent() {
         </div>
       </header>
       <main className="mx-auto max-w-3xl px-4 py-8">
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
-          My organizations
-        </h1>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+            My organizations
+          </h1>
+          {user?.role === "ORGANIZER" && (
+            <Link
+              href="/orgs/new"
+              className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            >
+              Create organization
+            </Link>
+          )}
+        </div>
         {loading && <p className="mt-4 text-zinc-500">Loading…</p>}
         {error && <p className="mt-4 text-red-600 dark:text-red-400">{error}</p>}
         {!loading && !error && orgs.length === 0 && (
