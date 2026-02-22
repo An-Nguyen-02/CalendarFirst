@@ -26,13 +26,14 @@ services:
       dockerfile: Dockerfile
     ports:
       - "4000:4000"
+    env_file:
+      - ./apps/api/.env
     environment:
       DATABASE_URL: postgresql://calsync:calsync@postgres:5432/calsync
       JWT_SECRET: ${JWT_SECRET:-dev-jwt-secret-change-in-prod}
       JWT_ACCESS_EXPIRY: ${JWT_ACCESS_EXPIRY:-15m}
       JWT_REFRESH_EXPIRY: ${JWT_REFRESH_EXPIRY:-7d}
-      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
-      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      # STRIPE_* and BASE_URL loaded from env_file (apps/api/.env); add here to override
       BASE_URL: ${BASE_URL:-http://localhost:3000}
     depends_on:
       postgres:

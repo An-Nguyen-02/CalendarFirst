@@ -1,9 +1,10 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function OrderCancelPage() {
+function OrderCancelContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
 
@@ -38,5 +39,13 @@ export default function OrderCancelPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function OrderCancelPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-950"><span className="text-zinc-500">Loading…</span></div>}>
+      <OrderCancelContent />
+    </Suspense>
   );
 }

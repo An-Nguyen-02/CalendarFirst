@@ -1,10 +1,19 @@
-import { EventStatus } from "@prisma/client";
+import { EventStatus, Prisma } from "@prisma/client";
 import { prisma } from "../lib/prisma";
 import type { CreateEventInput, UpdateEventInput } from "../schemas/event";
 
 export async function create(orgId: string, data: CreateEventInput) {
   return await prisma.event.create({
-    data: { orgId, ...data },
+    data: {
+      orgId,
+      title: data.title,
+      description: data.description ?? null,
+      startAt: data.startAt,
+      endAt: data.endAt,
+      venue: data.venue ?? null,
+      status: data.status,
+      capacity: data.capacity ?? null,
+    },
   });
 }
 
@@ -13,9 +22,18 @@ export async function update(
   orgId: string,
   data: UpdateEventInput
 ) {
+  const updateData: Prisma.EventUpdateManyMutationInput = {};
+  if (data.title !== undefined) updateData.title = data.title;
+  if (data.description !== undefined) updateData.description = data.description;
+  if (data.startAt !== undefined) updateData.startAt = data.startAt;
+  if (data.endAt !== undefined) updateData.endAt = data.endAt;
+  if (data.venue !== undefined) updateData.venue = data.venue;
+  if (data.status !== undefined) updateData.status = data.status;
+  if (data.capacity !== undefined) updateData.capacity = data.capacity;
+
   const result = await prisma.event.updateMany({
     where: { id: eventId, orgId },
-    data,
+    data: updateData,
   });
   if (result.count === 0) return null;
   return await prisma.event.findUnique({

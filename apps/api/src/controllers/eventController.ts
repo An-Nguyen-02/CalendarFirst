@@ -21,7 +21,12 @@ export async function listOrgEvents(req: Request, res: Response) {
 }
 
 export async function getOrgEvent(req: Request, res: Response) {
-  const { orgId, eventId } = req.params;
+  const orgId = req.params.orgId;
+  const eventId = req.params.eventId;
+  if (!orgId || !eventId) {
+    res.status(400).json({ error: "Missing orgId or eventId" });
+    return;
+  }
   const event = await eventService.getById(eventId, orgId);
   if (!event) {
     res.status(404).json({ error: "Event not found" });
@@ -36,7 +41,12 @@ export async function updateEvent(req: Request, res: Response) {
     res.status(400).json({ error: parsed.error.flatten() });
     return;
   }
-  const { orgId, eventId } = req.params;
+  const orgId = req.params.orgId;
+  const eventId = req.params.eventId;
+  if (!orgId || !eventId) {
+    res.status(400).json({ error: "Missing orgId or eventId" });
+    return;
+  }
   const event = await eventService.update(eventId, orgId, parsed.data);
   if (!event) {
     res.status(404).json({ error: "Event not found" });
@@ -46,7 +56,12 @@ export async function updateEvent(req: Request, res: Response) {
 }
 
 export async function deleteEvent(req: Request, res: Response) {
-  const { orgId, eventId } = req.params;
+  const orgId = req.params.orgId;
+  const eventId = req.params.eventId;
+  if (!orgId || !eventId) {
+    res.status(400).json({ error: "Missing orgId or eventId" });
+    return;
+  }
   const deleted = await eventService.deleteEvent(eventId, orgId);
   if (!deleted) {
     res.status(404).json({ error: "Event not found" });
@@ -62,12 +77,20 @@ export async function listPublicEvents(req: Request, res: Response) {
   const to = req.query.to ? new Date(req.query.to as string) : undefined;
   const limit =
     req.query.limit != null ? Number(req.query.limit) : undefined;
-  const events = await eventService.listPublic({ from, to, limit });
+  const options: { from?: Date; to?: Date; limit?: number } = {};
+  if (from != null) options.from = from;
+  if (to != null) options.to = to;
+  if (limit != null) options.limit = limit;
+  const events = await eventService.listPublic(options);
   res.status(200).json({ events });
 }
 
 export async function getPublicEvent(req: Request, res: Response) {
   const eventId = req.params.eventId;
+  if (!eventId) {
+    res.status(400).json({ error: "Missing eventId" });
+    return;
+  }
   const event = await eventService.getById(eventId);
   if (!event || event.status !== "PUBLISHED") {
     res.status(404).json({ error: "Event not found" });

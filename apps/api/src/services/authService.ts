@@ -23,8 +23,8 @@ export async function login(input: LoginInput) {
 
   const accessToken = jwt.sign(
     { sub: user.id, email: user.email, role: user.role },
-    JWT_SECRET,
-    { expiresIn: ACCESS_EXPIRY }
+    JWT_SECRET as jwt.Secret,
+    { expiresIn: ACCESS_EXPIRY } as jwt.SignOptions
   );
 
   const refreshToken = crypto.randomUUID();
@@ -64,8 +64,8 @@ export async function register(input: RegisterInput) {
 
   const accessToken = jwt.sign(
     { sub: user.id, email: user.email, role: user.role },
-    JWT_SECRET,
-    { expiresIn: ACCESS_EXPIRY }
+    JWT_SECRET as jwt.Secret,
+    { expiresIn: ACCESS_EXPIRY } as jwt.SignOptions
   );
 
   const refreshToken = crypto.randomUUID();
@@ -115,8 +115,8 @@ export async function refresh(refreshToken: string) {
 
   const accessToken = jwt.sign(
     { sub: record.user.id, email: record.user.email, role: record.user.role },
-    JWT_SECRET,
-    { expiresIn: ACCESS_EXPIRY }
+    JWT_SECRET as jwt.Secret,
+    { expiresIn: ACCESS_EXPIRY } as jwt.SignOptions
   );
 
   return {

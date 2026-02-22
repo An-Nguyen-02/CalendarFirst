@@ -5,13 +5,25 @@ type OrderWithItems = Order & {
   items: (OrderItem & { ticketType: TicketType })[];
 };
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "");
+let stripeInstance: Stripe | null = null;
+
+function getStripe(): Stripe {
+  if (!stripeInstance) {
+    const key = process.env.STRIPE_SECRET_KEY;
+    if (!key || key === "") {
+      throw new Error("Stripe is not configured: STRIPE_SECRET_KEY is missing");
+    }
+    stripeInstance = new Stripe(key);
+  }
+  return stripeInstance;
+}
 
 export async function createCheckoutSession(
   order: OrderWithItems,
   successUrl: string,
   cancelUrl: string
 ): Promise<string> {
+  const stripe = getStripe();
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = order.items.map(
     (item) => ({
       price_data: {
@@ -42,4 +54,6 @@ export async function createCheckoutSession(
   return session.url;
 }
 
-export { stripe };
+export function getStripeClient(): Stripe {
+  return getStripe();
+}

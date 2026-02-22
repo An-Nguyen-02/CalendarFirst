@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Stripe from "stripe";
-import { stripe } from "../services/stripeService";
+import { getStripeClient } from "../services/stripeService";
 import * as orderService from "../services/orderService";
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
@@ -17,6 +17,7 @@ export async function handleStripeWebhook(req: Request, res: Response) {
   const payload = Buffer.isBuffer(rawBody) ? rawBody : Buffer.from(rawBody, "utf8");
 
   try {
+    const stripe = getStripeClient();
     event = stripe.webhooks.constructEvent(payload, signature, webhookSecret);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";

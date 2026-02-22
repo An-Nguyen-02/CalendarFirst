@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,7 +11,7 @@ const ROLES: { value: UserRole; label: string }[] = [
   { value: "ORGANIZER", label: "Organizer" },
 ];
 
-export default function SignUpPage() {
+function SignUpForm() {
   const searchParams = useSearchParams();
   const nextUrl = searchParams.get("next") ?? undefined;
   const { register } = useAuth();
@@ -138,5 +138,13 @@ export default function SignUpPage() {
         </p>
       </main>
     </div>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-950"><span className="text-zinc-500">Loading…</span></div>}>
+      <SignUpForm />
+    </Suspense>
   );
 }

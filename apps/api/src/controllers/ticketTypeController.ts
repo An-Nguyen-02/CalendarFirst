@@ -22,7 +22,12 @@ export async function listTicketTypes(req: Request, res: Response) {
 }
 
 export async function getTicketType(req: Request, res: Response) {
-  const { eventId, ticketTypeId } = req.params;
+  const eventId = req.params.eventId;
+  const ticketTypeId = req.params.ticketTypeId;
+  if (!eventId || !ticketTypeId) {
+    res.status(400).json({ error: "Missing eventId or ticketTypeId" });
+    return;
+  }
   const ticketType = await ticketTypeService.getById(ticketTypeId, eventId);
   if (!ticketType) {
     res.status(404).json({ error: "Ticket type not found" });
@@ -37,7 +42,12 @@ export async function updateTicketType(req: Request, res: Response) {
     res.status(400).json({ error: parsed.error.flatten() });
     return;
   }
-  const { eventId, ticketTypeId } = req.params;
+  const eventId = req.params.eventId;
+  const ticketTypeId = req.params.ticketTypeId;
+  if (!eventId || !ticketTypeId) {
+    res.status(400).json({ error: "Missing eventId or ticketTypeId" });
+    return;
+  }
   try {
     const ticketType = await ticketTypeService.update(
       ticketTypeId,
@@ -59,7 +69,12 @@ export async function updateTicketType(req: Request, res: Response) {
 }
 
 export async function deleteTicketType(req: Request, res: Response) {
-  const { eventId, ticketTypeId } = req.params;
+  const eventId = req.params.eventId;
+  const ticketTypeId = req.params.ticketTypeId;
+  if (!eventId || !ticketTypeId) {
+    res.status(400).json({ error: "Missing eventId or ticketTypeId" });
+    return;
+  }
   try {
     const deleted = await ticketTypeService.deleteTicketType(
       ticketTypeId,
