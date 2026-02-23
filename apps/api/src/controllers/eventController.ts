@@ -62,8 +62,14 @@ export async function deleteEvent(req: Request, res: Response) {
     res.status(400).json({ error: "Missing orgId or eventId" });
     return;
   }
-  const deleted = await eventService.deleteEvent(eventId, orgId);
-  if (!deleted) {
+  const result = await eventService.deleteEvent(eventId, orgId);
+  if (!result.deleted) {
+    if (result.reason === "has_orders") {
+      res.status(400).json({
+        error: "Cannot delete event that has orders. Cancel or refund orders first.",
+      });
+      return;
+    }
     res.status(404).json({ error: "Event not found" });
     return;
   }
@@ -77,10 +83,21 @@ export async function listPublicEvents(req: Request, res: Response) {
   const to = req.query.to ? new Date(req.query.to as string) : undefined;
   const limit =
     req.query.limit != null ? Number(req.query.limit) : undefined;
-  const options: { from?: Date; to?: Date; limit?: number } = {};
-  if (from != null) options.from = from;
-  if (to != null) options.to = to;
+  const offset =
+    req.query.offset != null ? Number(req.query.offset) : undefined;
+  const q = typeof req.query.q === "string" ? req.query.q : undefined;
+  const options: {
+    from?: Date;
+    to?: Date;
+    limit?: number;
+    offset?: number;
+    search?: string;
+  } = {};
+  if (from != null && !Number.isNaN(from.getTime())) options.from = from;
+  if (to != null && !Number.isNaN(to.getTime())) options.to = to;
   if (limit != null) options.limit = limit;
+  if (offset != null) options.offset = offset;
+  if (q != null) options.search = q;
   const events = await eventService.listPublic(options);
   res.status(200).json({ events });
 }

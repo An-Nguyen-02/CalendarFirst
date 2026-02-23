@@ -41,6 +41,11 @@ function OrganizerEventContent() {
   const [ttQuantityTotal, setTtQuantityTotal] = useState("");
   const [ttSubmitting, setTtSubmitting] = useState(false);
   const [ttError, setTtError] = useState("");
+  const [deleteEventConfirm, setDeleteEventConfirm] = useState(false);
+  const [deleteEventLoading, setDeleteEventLoading] = useState(false);
+  const [deleteEventError, setDeleteEventError] = useState("");
+  const [deletingTicketTypeId, setDeletingTicketTypeId] = useState<string | null>(null);
+  const [deleteTtError, setDeleteTtError] = useState("");
 
   useEffect(() => {
     const token = getToken();
@@ -162,6 +167,58 @@ function OrganizerEventContent() {
       setTtError(msg);
     } finally {
       setTtSubmitting(false);
+    }
+  }
+
+  async function handleDeleteEvent() {
+    setDeleteEventError("");
+    setDeleteEventLoading(true);
+    const token = getToken();
+    if (!token) {
+      setDeleteEventLoading(false);
+      return;
+    }
+    try {
+      await apiJson(`/orgs/${orgId}/events/${eventId}`, {
+        method: "DELETE",
+        token,
+      });
+      router.push(`/orgs/${orgId}/events`);
+      return;
+    } catch (err: unknown) {
+      const msg =
+        err && typeof err === "object" && "data" in err
+          ? String((err as { data?: { error?: string } }).data?.error ?? "Failed to delete event")
+          : "Failed to delete event";
+      setDeleteEventError(msg);
+    } finally {
+      setDeleteEventLoading(false);
+      setDeleteEventConfirm(false);
+    }
+  }
+
+  async function handleDeleteTicketType(ticketTypeId: string) {
+    setDeleteTtError("");
+    setDeletingTicketTypeId(ticketTypeId);
+    const token = getToken();
+    if (!token) {
+      setDeletingTicketTypeId(null);
+      return;
+    }
+    try {
+      await apiJson(`/orgs/${orgId}/events/${eventId}/ticket-types/${ticketTypeId}`, {
+        method: "DELETE",
+        token,
+      });
+      setTicketTypes((prev) => prev.filter((t) => t.id !== ticketTypeId));
+    } catch (err: unknown) {
+      const msg =
+        err && typeof err === "object" && "data" in err
+          ? String((err as { data?: { error?: string } }).data?.error ?? "Failed to delete ticket type")
+          : "Failed to delete ticket type";
+      setDeleteTtError(msg);
+    } finally {
+      setDeletingTicketTypeId(null);
     }
   }
 
@@ -314,6 +371,44 @@ function OrganizerEventContent() {
               </div>
             </form>
           )}
+          {!editing && (
+            <div className="mt-6 border-t border-zinc-200 pt-4 dark:border-zinc-700">
+              {!deleteEventConfirm ? (
+                <button
+                  type="button"
+                  onClick={() => setDeleteEventConfirm(true)}
+                  className="text-sm text-red-600 hover:underline dark:text-red-400"
+                >
+                  Delete event
+                </button>
+              ) : (
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                    Delete this event? This cannot be undone. Events with orders cannot be deleted.
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleDeleteEvent}
+                    disabled={deleteEventLoading}
+                    className="rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50 dark:bg-red-700 dark:hover:bg-red-800"
+                  >
+                    {deleteEventLoading ? "Deleting…" : "Yes, delete"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setDeleteEventConfirm(false); setDeleteEventError(""); }}
+                    disabled={deleteEventLoading}
+                    className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-700 dark:border-zinc-600 dark:text-zinc-300"
+                  >
+                    Cancel
+                  </button>
+                  {deleteEventError && (
+                    <p className="w-full text-sm text-red-600 dark:text-red-400">{deleteEventError}</p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="mt-8 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
@@ -354,6 +449,9 @@ function OrganizerEventContent() {
 
         <div className="mt-8 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
           <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-50">Ticket types</h2>
+          {deleteTtError && (
+            <p className="mt-2 text-sm text-red-600 dark:text-red-400">{deleteTtError}</p>
+          )}
           {ticketTypes.length === 0 ? (
             <p className="mt-2 text-sm text-zinc-500">No ticket types yet. Add one below.</p>
           ) : (
@@ -364,6 +462,22 @@ function OrganizerEventContent() {
                   <span className="text-sm text-zinc-500">
                     {formatCents(tt.priceCents)} · {tt.quantitySold} / {tt.quantityTotal} sold
                   </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (tt.quantitySold > 0) {
+                        setDeleteTtError("Cannot delete a ticket type that has already been sold.");
+                        return;
+                      }
+                      if (window.confirm(`Remove ticket type "${tt.name}"? This cannot be undone.`)) {
+                        handleDeleteTicketType(tt.id);
+                      }
+                    }}
+                    disabled={deletingTicketTypeId === tt.id}
+                    className="text-sm text-red-600 hover:underline disabled:opacity-50 dark:text-red-400"
+                  >
+                    {deletingTicketTypeId === tt.id ? "Deleting…" : "Delete"}
+                  </button>
                 </li>
               ))}
             </ul>

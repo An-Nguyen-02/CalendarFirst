@@ -66,25 +66,48 @@ export async function listPublic(options?: {
   from?: Date;
   to?: Date;
   limit?: number;
+  offset?: number;
+  search?: string;
 }) {
-  const where: { status: EventStatus; startAt?: { gte?: Date; lte?: Date } } = {
+  const where: Prisma.EventWhereInput = {
     status: EventStatus.PUBLISHED,
   };
   if (options?.from != null || options?.to != null) {
     where.startAt = {};
-    if (options.from != null) where.startAt.gte = options.from;
-    if (options.to != null) where.startAt.lte = options.to;
+    if (options.from != null) (where.startAt as { gte?: Date }).gte = options.from;
+    if (options.to != null) (where.startAt as { lte?: Date }).lte = options.to;
+  }
+  if (options?.search?.trim()) {
+    const q = options.search.trim();
+    where.AND = [
+      ...(Array.isArray(where.AND) ? where.AND : []),
+      {
+        OR: [
+          { title: { contains: q, mode: "insensitive" as const } },
+          { description: { contains: q, mode: "insensitive" as const } },
+        ],
+      },
+    ];
   }
   return await prisma.event.findMany({
     where,
     orderBy: { startAt: "asc" },
     ...(options?.limit != null && { take: options.limit }),
+    ...(options?.offset != null && { skip: options.offset }),
   });
 }
 
 export async function deleteEvent(eventId: string, orgId: string) {
-  const result = await prisma.event.deleteMany({
+  const event = await prisma.event.findFirst({
+    where: { id: eventId, orgId },
+    include: { _count: { select: { orders: true } } },
+  });
+  if (!event) return { deleted: false, reason: "not_found" as const };
+  if (event._count.orders > 0) {
+    return { deleted: false, reason: "has_orders" as const };
+  }
+  await prisma.event.deleteMany({
     where: { id: eventId, orgId },
   });
-  return result.count > 0;
+  return { deleted: true };
 }
