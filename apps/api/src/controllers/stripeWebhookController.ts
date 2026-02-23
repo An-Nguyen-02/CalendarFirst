@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Stripe from "stripe";
 import { getStripeClient } from "../services/stripeService";
 import * as orderService from "../services/orderService";
+import * as emailService from "../services/emailService";
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
 
@@ -40,6 +41,9 @@ export async function handleStripeWebhook(req: Request, res: Response) {
         session.id,
         "succeeded"
       );
+      emailService.sendOrderConfirmation(orderId).catch((err) => {
+        console.error("[webhook] Order confirmation email failed for", orderId, err);
+      });
     }
   }
 

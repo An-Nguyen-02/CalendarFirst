@@ -10,7 +10,7 @@ Calendar-first event management and ticketing platform.
 - AWS (planned)
 
 ## Current Status
-**Day 1 complete.** Monorepo (npm workspaces), Docker Postgres + Redis, Express API with `/health`, Next.js health UI, structured logs (pino) + request-id.
+**Days 1–12 complete.** See [docs/MVP_PLAN.md](docs/MVP_PLAN.md) for the day register and next steps. Latest: Day 12 — order confirmation email (Resend) when order is marked PAID via Stripe webhook. Next: Day 13.
 
 ## Run locally
 
