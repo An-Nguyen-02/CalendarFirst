@@ -81,10 +81,11 @@ function OrdersContent() {
                 key={order.id}
                 className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
               >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="font-medium text-zinc-900 dark:text-zinc-50">
-                    {order.event.title}
-                  </span>
+                <Link href={`/orders/${order.id}`} className="block">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="font-medium text-zinc-900 dark:text-zinc-50">
+                      {order.event.title}
+                    </span>
                   <span
                     className={`rounded px-2 py-0.5 text-sm ${
                       order.status === "PAID"
@@ -97,16 +98,17 @@ function OrdersContent() {
                     {order.status}
                   </span>
                 </div>
-                <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-                  {formatDate(order.createdAt)} · {formatCents(order.totalCents)}
-                </p>
-                <ul className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                  {order.items.map((item) => (
-                    <li key={item.id}>
-                      {item.qty}× {item.ticketType.name}
-                    </li>
-                  ))}
-                </ul>
+                  <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                    {formatDate(order.createdAt)} · {formatCents(order.totalCents)}
+                  </p>
+                  <ul className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+                    {order.items.map((item) => (
+                      <li key={item.id}>
+                        {item.qty}× {item.ticketType.name}
+                      </li>
+                    ))}
+                  </ul>
+                </Link>
                 {order.status === "CREATED" && (
                   <Link
                     href={`/orders/${order.id}/checkout`}

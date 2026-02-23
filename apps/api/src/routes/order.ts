@@ -7,5 +7,6 @@ const router = Router();
 router.get("/", requireAuth, orderController.listOrders);
 router.get("/:orderId", requireAuth, orderController.getOrder);
 router.post("/:orderId/checkout", requireAuth, orderController.checkout);
+router.post("/:orderId/cancel", requireAuth, orderController.cancelOrder);
 
 export default router;

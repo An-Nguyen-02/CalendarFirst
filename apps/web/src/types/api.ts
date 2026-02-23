@@ -52,3 +52,9 @@ export type OrdersResponse = { orders: OrderSummary[] };
 
 export type CreateOrderBody = { items: { ticketTypeId: string; qty: number }[] };
 export type CheckoutResponse = { url: string };
+
+/** Organizer view: orders for an event */
+export type EventOrderSummary = OrderSummary & {
+  user?: { id: string; email: string };
+};
+export type EventOrdersResponse = { orders: EventOrderSummary[] };

@@ -13,6 +13,7 @@ organizerEventRouter.use(requireAuth, requireOrgMembership, requireOrgRole([OrgR
 
 organizerEventRouter.post("/", eventController.createEvent);
 organizerEventRouter.get("/", eventController.listOrgEvents);
+organizerEventRouter.get("/:eventId/orders", orderController.listEventOrders);
 organizerEventRouter.get("/:eventId", eventController.getOrgEvent);
 organizerEventRouter.patch("/:eventId", eventController.updateEvent);
 organizerEventRouter.delete("/:eventId", eventController.deleteEvent);

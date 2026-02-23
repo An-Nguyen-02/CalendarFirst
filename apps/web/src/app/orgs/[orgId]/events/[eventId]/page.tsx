@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Protected } from "@/components/Protected";
 import { useAuth } from "@/contexts/AuthContext";
 import { apiJson } from "@/lib/api";
-import type { EventSummary, TicketTypesResponse } from "@/types/api";
+import type { EventSummary, EventOrdersResponse, TicketTypesResponse } from "@/types/api";
 
 function OrganizerEventContent() {
   const params = useParams();
@@ -16,6 +16,8 @@ function OrganizerEventContent() {
   const { getToken } = useAuth();
   const [event, setEvent] = useState<EventSummary | null>(null);
   const [ticketTypes, setTicketTypes] = useState<TicketTypesResponse["ticketTypes"]>([]);
+  const [eventOrders, setEventOrders] = useState<EventOrdersResponse["orders"]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -60,6 +62,16 @@ function OrganizerEventContent() {
       .catch(() => setError("Event not found"))
       .finally(() => setLoading(false));
   }, [orgId, eventId, getToken]);
+
+  useEffect(() => {
+    const token = getToken();
+    if (!token || !event) return;
+    setOrdersLoading(true);
+    apiJson<EventOrdersResponse>(`/orgs/${orgId}/events/${eventId}/orders`, { token })
+      .then((data) => setEventOrders(data.orders))
+      .catch(() => setEventOrders([]))
+      .finally(() => setOrdersLoading(false));
+  }, [orgId, eventId, event, getToken]);
 
   const formatDate = (s: string) =>
     new Date(s).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
@@ -305,6 +317,42 @@ function OrganizerEventContent() {
                 </button>
               </div>
             </form>
+          )}
+        </div>
+
+        <div className="mt-8 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+          <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-50">Orders</h2>
+          {ordersLoading ? (
+            <p className="mt-2 text-sm text-zinc-500">Loading orders…</p>
+          ) : eventOrders.length === 0 ? (
+            <p className="mt-2 text-sm text-zinc-500">No orders yet.</p>
+          ) : (
+            <ul className="mt-4 space-y-3">
+              {eventOrders.map((o) => (
+                <li
+                  key={o.id}
+                  className="flex flex-wrap items-center justify-between gap-2 rounded border border-zinc-100 py-2 px-3 dark:border-zinc-700"
+                >
+                  <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                    {o.user?.email ?? "—"} · {formatCents(o.totalCents)}
+                  </span>
+                  <span
+                    className={`rounded px-2 py-0.5 text-xs ${
+                      o.status === "PAID"
+                        ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                        : o.status === "CREATED"
+                          ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400"
+                          : "bg-zinc-100 text-zinc-600 dark:bg-zinc-700 dark:text-zinc-300"
+                    }`}
+                  >
+                    {o.status}
+                  </span>
+                  <span className="w-full text-xs text-zinc-500 dark:text-zinc-400">
+                    {o.items.map((i) => `${i.qty}× ${i.ticketType.name}`).join(", ")}
+                  </span>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
 

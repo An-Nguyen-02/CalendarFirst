@@ -110,3 +110,31 @@ export async function checkout(req: Request, res: Response) {
     throw err;
   }
 }
+
+export async function listEventOrders(req: Request, res: Response) {
+  const orgId = req.params.orgId as string;
+  const eventId = req.params.eventId as string;
+  if (!orgId || !eventId) {
+    res.status(400).json({ error: "Missing orgId or eventId" });
+    return;
+  }
+  const orders = await orderService.listOrdersByEvent(eventId, orgId);
+  res.status(200).json({ orders });
+}
+
+export async function cancelOrder(req: Request, res: Response) {
+  const orderId = req.params.orderId as string;
+  const userId = req.user?.sub;
+  if (!userId) {
+    res.status(401).json({ error: "Unauthorized" });
+    return;
+  }
+  const order = await orderService.cancelOrder(orderId, userId);
+  if (!order) {
+    res.status(400).json({
+      error: "Order not found or cannot be cancelled (only CREATED orders can be cancelled)",
+    });
+    return;
+  }
+  res.status(200).json(order);
+}

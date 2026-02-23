@@ -150,3 +150,30 @@ export async function createPayment(
     data: { orderId, provider, providerRef, status },
   });
 }
+
+export async function listOrdersByEvent(eventId: string, orgId: string) {
+  const event = await prisma.event.findFirst({
+    where: { id: eventId, orgId },
+  });
+  if (!event) return [];
+  return await prisma.order.findMany({
+    where: { eventId },
+    include: {
+      items: { include: { ticketType: true } },
+      user: { select: { id: true, email: true } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
+export async function cancelOrder(orderId: string, userId: string) {
+  const order = await prisma.order.findFirst({
+    where: { id: orderId, userId },
+  });
+  if (!order || order.status !== OrderStatus.CREATED) return null;
+  return await prisma.order.update({
+    where: { id: orderId },
+    data: { status: OrderStatus.CANCELLED },
+    include: { items: { include: { ticketType: true } }, event: true },
+  });
+}
