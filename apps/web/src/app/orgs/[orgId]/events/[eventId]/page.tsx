@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Protected } from "@/components/Protected";
 import { useAuth } from "@/contexts/AuthContext";
 import { apiJson } from "@/lib/api";
+import { formatCents, formatDate } from "@/lib/format";
 import type { EventSummary, EventOrdersResponse, TicketTypesResponse } from "@/types/api";
 
 function OrganizerEventContent() {
@@ -72,11 +73,6 @@ function OrganizerEventContent() {
       .catch(() => setEventOrders([]))
       .finally(() => setOrdersLoading(false));
   }, [orgId, eventId, event, getToken]);
-
-  const formatDate = (s: string) =>
-    new Date(s).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
-  const formatCents = (cents: number) =>
-    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2 }).format(cents / 100);
 
   async function handleEditSubmit(e: React.FormEvent) {
     e.preventDefault();

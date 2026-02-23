@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { Protected } from "@/components/Protected";
 import { useAuth } from "@/contexts/AuthContext";
 import { apiJson } from "@/lib/api";
+import { formatCents, formatDate } from "@/lib/format";
 import type { OrderSummary } from "@/types/api";
 
 function OrderDetailContent() {
@@ -25,19 +26,6 @@ function OrderDetailContent() {
       .catch(() => setError("Order not found"))
       .finally(() => setLoading(false));
   }, [orderId, getToken]);
-
-  const formatCents = (cents: number) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 2,
-    }).format(cents / 100);
-
-  const formatDate = (s: string) =>
-    new Date(s).toLocaleString(undefined, {
-      dateStyle: "medium",
-      timeStyle: "short",
-    });
 
   async function handleCancel() {
     if (!orderId || order?.status !== "CREATED") return;

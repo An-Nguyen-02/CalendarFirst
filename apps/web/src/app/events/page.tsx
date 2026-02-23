@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { apiJson } from "@/lib/api";
+import { formatDate } from "@/lib/format";
 import type { EventsResponse } from "@/types/api";
 
 export default function EventsPage() {
@@ -16,12 +17,6 @@ export default function EventsPage() {
       .catch(() => setError("Failed to load events"))
       .finally(() => setLoading(false));
   }, []);
-
-  const formatDate = (s: string) =>
-    new Date(s).toLocaleString(undefined, {
-      dateStyle: "medium",
-      timeStyle: "short",
-    });
 
   return (
     <div className="min-h-screen bg-zinc-50 font-sans dark:bg-zinc-950">

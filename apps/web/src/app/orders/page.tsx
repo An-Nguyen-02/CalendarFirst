@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Protected } from "@/components/Protected";
 import { useAuth } from "@/contexts/AuthContext";
 import { apiJson } from "@/lib/api";
+import { formatCents, formatDate } from "@/lib/format";
 import type { OrderSummary, OrdersResponse } from "@/types/api";
 
 function OrdersContent() {
@@ -21,19 +22,6 @@ function OrdersContent() {
       .catch(() => setError("Failed to load orders"))
       .finally(() => setLoading(false));
   }, [getToken]);
-
-  const formatCents = (cents: number) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 2,
-    }).format(cents / 100);
-
-  const formatDate = (s: string) =>
-    new Date(s).toLocaleString(undefined, {
-      dateStyle: "short",
-      timeStyle: "short",
-    });
 
   return (
     <div className="min-h-screen bg-zinc-50 font-sans dark:bg-zinc-950">
@@ -99,7 +87,7 @@ function OrdersContent() {
                   </span>
                 </div>
                   <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-                    {formatDate(order.createdAt)} · {formatCents(order.totalCents)}
+                    {formatDate(order.createdAt, "short")} · {formatCents(order.totalCents)}
                   </p>
                   <ul className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
                     {order.items.map((item) => (

@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { apiJson } from "@/lib/api";
+import { formatCents, formatDate } from "@/lib/format";
 import type {
   EventSummary,
   TicketTypeSummary,
@@ -41,18 +42,6 @@ export default function EventDetailPage() {
       .catch(() => setError("Event not found"))
       .finally(() => setLoading(false));
   }, [eventId]);
-
-  const formatDate = (s: string) =>
-    new Date(s).toLocaleString(undefined, {
-      dateStyle: "long",
-      timeStyle: "short",
-    });
-  const formatCents = (cents: number) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 2,
-    }).format(cents / 100);
 
   const totalQty = Object.values(quantities).reduce((a, b) => a + b, 0);
 
@@ -140,7 +129,7 @@ export default function EventDetailPage() {
           {event.title}
         </h1>
         <p className="mt-2 text-zinc-500 dark:text-zinc-400">
-          {formatDate(event.startAt)}
+          {formatDate(event.startAt, "long")}
           {event.venue && ` · ${event.venue}`}
         </p>
         {event.description && (

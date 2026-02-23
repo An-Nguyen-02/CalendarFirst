@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Protected } from "@/components/Protected";
 import { useAuth } from "@/contexts/AuthContext";
 import { apiJson } from "@/lib/api";
+import { formatDate } from "@/lib/format";
 import type { EventsResponse } from "@/types/api";
 
 function OrgEventsContent() {
@@ -24,12 +25,6 @@ function OrgEventsContent() {
       .catch(() => setError("Failed to load events"))
       .finally(() => setLoading(false));
   }, [orgId, getToken]);
-
-  const formatDate = (s: string) =>
-    new Date(s).toLocaleString(undefined, {
-      dateStyle: "medium",
-      timeStyle: "short",
-    });
 
   return (
     <div className="min-h-screen bg-zinc-50 font-sans dark:bg-zinc-950">
