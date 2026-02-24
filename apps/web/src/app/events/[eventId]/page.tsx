@@ -119,9 +119,14 @@ export default function EventDetailPage() {
           <Link href="/events" className="text-zinc-600 hover:underline dark:text-zinc-400">
             ← Events
           </Link>
-          <Link href="/orders" className="text-sm text-zinc-600 hover:underline dark:text-zinc-400">
-            My orders
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link href="/orders" className="text-sm text-zinc-600 hover:underline dark:text-zinc-400">
+              My orders
+            </Link>
+            <Link href="/settings" className="text-sm text-zinc-600 hover:underline dark:text-zinc-400">
+              Profile
+            </Link>
+          </div>
         </div>
       </header>
       <main className="mx-auto max-w-3xl px-4 py-8">

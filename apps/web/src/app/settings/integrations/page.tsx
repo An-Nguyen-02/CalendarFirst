@@ -27,11 +27,13 @@ function IntegrationsContent() {
   useEffect(() => {
     const token = getToken();
     if (!token) return;
+    setLoading(true);
+    setError("");
     apiJson<GoogleStatus>(getApiBase() + "/integrations/google", { token })
       .then(setStatus)
       .catch(() => setError("Failed to load status"))
       .finally(() => setLoading(false));
-  }, [getToken, connected]);
+  }, [getToken, connected, errorParam]);
 
   async function handleConnectGoogle() {
     const token = getToken();
@@ -58,8 +60,8 @@ function IntegrationsContent() {
     <div className="min-h-screen bg-zinc-50 font-sans dark:bg-zinc-950">
       <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-4">
-          <Link href="/" className="text-zinc-600 hover:underline dark:text-zinc-400">
-            ← Home
+          <Link href="/settings" className="text-zinc-600 hover:underline dark:text-zinc-400">
+            ← Profile
           </Link>
         </div>
       </header>

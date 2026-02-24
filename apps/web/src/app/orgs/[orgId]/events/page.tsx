@@ -33,9 +33,14 @@ function OrgEventsContent() {
           <Link href="/orgs" className="text-zinc-600 hover:underline dark:text-zinc-400">
             ← Organizations
           </Link>
-          <span className="text-sm text-zinc-600 dark:text-zinc-400">
-            {user?.email}
-          </span>
+          <div className="flex items-center gap-4">
+            <Link href="/settings" className="text-sm text-zinc-600 hover:underline dark:text-zinc-400">
+              Profile
+            </Link>
+            <span className="text-sm text-zinc-600 dark:text-zinc-400">
+              {user?.email}
+            </span>
+          </div>
         </div>
       </header>
       <main className="mx-auto max-w-3xl px-4 py-8">

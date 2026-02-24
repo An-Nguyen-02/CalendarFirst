@@ -36,6 +36,9 @@ function OrgsContent() {
             <Link href="/orders" className="text-sm underline hover:no-underline">
               My orders
             </Link>
+            <Link href="/settings" className="text-sm underline hover:no-underline">
+              Profile
+            </Link>
             <button
               type="button"
               onClick={logout}

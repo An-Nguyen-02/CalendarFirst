@@ -249,6 +249,9 @@ function OrganizerEventContent() {
           <Link href={`/orgs/${orgId}/events`} className="text-zinc-600 hover:underline dark:text-zinc-400">
             ← Events
           </Link>
+          <Link href="/settings" className="text-sm text-zinc-600 hover:underline dark:text-zinc-400">
+            Profile
+          </Link>
         </div>
       </header>
       <main className="mx-auto max-w-3xl px-4 py-8">

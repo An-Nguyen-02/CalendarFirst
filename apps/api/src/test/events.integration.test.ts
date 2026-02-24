@@ -117,3 +117,41 @@ test("create event with endAt before startAt returns 400", async () => {
   assert.strictEqual(res.status, 400);
   assert.ok(res.body?.error);
 });
+
+// Day 13: Integrations and Google OAuth
+test("GET /integrations/google without auth returns 401", async () => {
+  const res = await request(app).get("/integrations/google");
+  assert.strictEqual(res.status, 401);
+});
+
+test("GET /integrations/google with auth returns connected status", async () => {
+  const loginRes = await request(app)
+    .post("/auth/login")
+    .send({ email: "demo@calsync.test", password: "demo1234" });
+  assert.strictEqual(loginRes.status, 200);
+  const token = loginRes.body.accessToken as string;
+  const res = await request(app)
+    .get("/integrations/google")
+    .set("Authorization", `Bearer ${token}`);
+  assert.strictEqual(res.status, 200);
+  assert.strictEqual(typeof res.body?.connected, "boolean");
+});
+
+test("GET /auth/google/start without auth returns 401", async () => {
+  const res = await request(app).get("/auth/google/start");
+  assert.strictEqual(res.status, 401);
+});
+
+test("GET /auth/google/start with auth returns redirectUrl", async () => {
+  const loginRes = await request(app)
+    .post("/auth/login")
+    .send({ email: "demo@calsync.test", password: "demo1234" });
+  assert.strictEqual(loginRes.status, 200);
+  const token = loginRes.body.accessToken as string;
+  const res = await request(app)
+    .get("/auth/google/start")
+    .set("Authorization", `Bearer ${token}`);
+  assert.strictEqual(res.status, 200);
+  assert.ok(typeof res.body?.redirectUrl === "string");
+  assert.ok(res.body.redirectUrl.includes("accounts.google.com"));
+});
