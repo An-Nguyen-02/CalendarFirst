@@ -3,12 +3,19 @@
   "version": "0.0.1",
   "private": true,
   "main": "dist/index.js",
+  "dependencies": {
+    "@calsync/shared": "*",
+    "@prisma/client": "^6.0.0"
+  },
   "scripts": {
     "build": "tsc",
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "prisma:generate": "prisma generate --schema=../api/prisma/schema.prisma",
+    "smoke:decrypt": "tsx src/smoke-decrypt.ts"
   },
   "devDependencies": {
     "@types/node": "^20",
+    "prisma": "^6.0.0",
     "tsx": "^4",
     "typescript": "^5"
   }

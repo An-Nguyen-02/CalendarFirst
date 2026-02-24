@@ -32,6 +32,12 @@ export default function Home() {
                 >
                   My orders
                 </Link>
+                <Link
+                  href="/settings/integrations"
+                  className="text-sm font-medium text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
+                >
+                  Integrations
+                </Link>
                 {user.role === "ORGANIZER" && (
                   <>
                     <Link

@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import pino from "pino";
 import { prisma } from "./lib/prisma";
 import authRoutes from "./routes/auth";
+import integrationsRoutes from "./routes/integrations";
 import orgRoutes from "./routes/org";
 import orderRoutes from "./routes/order";
 import stripeWebhookRoutes from "./routes/stripeWebhook";
@@ -55,6 +56,7 @@ app.use(
 app.use(express.json());
 
 app.use("/auth", authRoutes);
+app.use("/integrations", integrationsRoutes);
 app.use("/orgs", orgRoutes);
 app.use("/orders", orderRoutes);
 app.use("/events", publicEventRouter);

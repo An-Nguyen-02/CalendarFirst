@@ -15,8 +15,10 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@calsync/shared": "*",
     "@prisma/client": "^6.0.0",
     "bcrypt": "^6.0.0",
+    "google-auth-library": "^9.0.0",
     "resend": "^4.0.0",
     "express": "^4.21",
     "jsonwebtoken": "^9.0.3",

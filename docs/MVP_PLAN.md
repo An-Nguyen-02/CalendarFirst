@@ -34,7 +34,7 @@
 | 10 | Organizer event orders + attendee order detail + cancel order | Done | [day-10-organizer-orders-and-attendee-order-detail.md](plans/day-10-organizer-orders-and-attendee-order-detail.md) |
 | 11 | Event discovery (search/filters) + organizer delete event/ticket type | Done | [day-11-event-discovery-and-organizer-delete.md](plans/day-11-event-discovery-and-organizer-delete.md) |
 | 12 | Order confirmation email (Resend, on order PAID) | Done | [day-12-email-notifications.md](plans/day-12-email-notifications.md) |
-| 13 | Google OAuth connect (login + token storage) | Pending | [day-13-google-oauth-connect.md](plans/day-13-google-oauth-connect.md) |
+| 13 | Google OAuth connect (login + token storage) | Done | [day-13-google-oauth-connect.md](plans/day-13-google-oauth-connect.md) |
 | 14 | Calendar sync read: fetch Google events → store snapshot | Pending | [day-14-calendar-sync-read.md](plans/day-14-calendar-sync-read.md) |
 | 15 | “Add to Google Calendar” write on order paid (API + worker job) | Pending | [day-15-calendar-write-on-purchase.md](plans/day-15-calendar-write-on-purchase.md) |
 | 16 | SQS jobs for calendar sync + retries + DLQ (local + AWS-ready) | Pending | [day-16-sqs-calendar-jobs.md](plans/day-16-sqs-calendar-jobs.md) |
@@ -42,7 +42,7 @@
 | 18 | Terraform data: RDS Postgres + ElastiCache Redis + S3 + SQS | Pending | [day-18-terraform-data-and-queues.md](plans/day-18-terraform-data-and-queues.md) |
 | 19 | EKS + ECR + IAM baseline (Terraform) | Pending | [day-19-terraform-eks-ecr-iam.md](plans/day-19-terraform-eks-ecr-iam.md) |
 | 20 | Helm charts for api/web/worker + kube-prometheus-stack | Pending | [day-20-helm-and-observability.md](plans/day-20-helm-and-observability.md) |
-| 21 | GitHub Actions CI/CD: build/test → push ECR → helm deploy | Pending | [day-21-cicd-github-actions.md](plans/day-21-cicd-github-actions.md) || 13 | Google OAuth connect (login + token storage) | Pending | [day-13-google-oauth-connect.md](plans/day-13-google-oauth-connect.md) |
+| 21 | GitHub Actions CI/CD: build/test → push ECR → helm deploy | Pending | [day-21-cicd-github-actions.md](plans/day-21-cicd-github-actions.md) |
 | 14 | Calendar sync read: fetch Google events → store snapshot | Pending | [day-14-calendar-sync-read.md](plans/day-14-calendar-sync-read.md) |
 | 15 | “Add to Google Calendar” write on order paid (API + worker job) | Pending | [day-15-calendar-write-on-purchase.md](plans/day-15-calendar-write-on-purchase.md) |
 | 16 | SQS jobs for calendar sync + retries + DLQ (local + AWS-ready) | Pending | [day-16-sqs-calendar-jobs.md](plans/day-16-sqs-calendar-jobs.md) |

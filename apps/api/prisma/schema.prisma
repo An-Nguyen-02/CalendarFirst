@@ -35,11 +35,13 @@ model User {
   role         UserRole   @default(ATTENDEE)
   createdAt    DateTime   @default(now()) @map("created_at")
 
-  ownedOrgs      Org[]          @relation("OrgOwner")
-  orgMembers     OrgMember[]
-  refreshTokens  RefreshToken[]
-  orders         Order[]
-  idempotencyKeys IdempotencyKey[]
+  ownedOrgs           Org[]                @relation("OrgOwner")
+  orgMembers          OrgMember[]
+  refreshTokens       RefreshToken[]
+  orders              Order[]
+  idempotencyKeys     IdempotencyKey[]
+  oauthStates         OAuthState[]
+  calendarConnections CalendarConnection[]
 
   @@map("users")
 }
@@ -182,4 +184,34 @@ model IdempotencyKey {
   @@unique([userId, endpoint, key])
   @@index([key])
   @@map("idempotency_keys")
+}
+
+model OAuthState {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  state     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([state])
+  @@map("oauth_states")
+}
+
+model CalendarConnection {
+  id                    String   @id @default(uuid())
+  userId                String   @map("user_id")
+  provider              String
+  encryptedRefreshToken String   @map("encrypted_refresh_token")
+  scopes                String?
+  email                 String?
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, provider])
+  @@index([userId])
+  @@map("calendar_connections")
 }

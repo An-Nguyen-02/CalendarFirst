@@ -1,5 +1,10 @@
 # Day 13 — Google OAuth connect (login + token storage)
 
+## Setup (env)
+- **API** (`apps/api/.env`): `ENCRYPTION_KEY` (32 bytes, base64; generate with `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`), `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `BASE_URL` (web app URL for post-callback redirect), `API_PUBLIC_URL` (this API’s public URL for OAuth redirect_uri, e.g. `http://localhost:4000`).
+- **Worker** (for smoke test): `DATABASE_URL`, `ENCRYPTION_KEY`. Run from repo root: `cd apps/worker && npm run prisma:generate && npm run smoke:decrypt` (after at least one Google connection exists).
+- **Google Cloud Console:** Create OAuth 2.0 credentials (Web application), set authorized redirect URI to `{API_PUBLIC_URL}/auth/google/callback`.
+
 ## Prerequisites
 - Day 12 complete (email on order paid).
 - API and worker run locally.
@@ -11,10 +16,10 @@ Users can connect their Google account to CalSync via OAuth, and we can securely
 
 ## Definition of done
 - Google OAuth flow works end-to-end in local dev:
-  - `GET /auth/google/start` redirects to Google
+  - `GET /auth/google/start` (with Bearer token) returns `{ redirectUrl }`; frontend redirects user to Google
   - `GET /auth/google/callback` exchanges code for tokens
 - Tokens are stored server-side in DB with encryption at rest (app-level encryption at minimum).
-- `GET /me` (or similar) shows whether Google is connected.
+- `GET /integrations/google` shows whether Google is connected (not `/me`).
 - Worker can decrypt and use stored refresh token (smoke test only; no calendar calls yet).
 - Zod validation for callback params/state where applicable.
 - No secrets committed.
@@ -78,9 +83,10 @@ Add a settings page or button:
 7. Smoke test + cleanup
 
 ## Summary checklist
-- [ ] Prisma migration applied
-- [ ] Encryption key required and used
-- [ ] OAuth start/callback working locally
-- [ ] Refresh token stored encrypted
-- [ ] Connection status endpoint
-- [ ] Web has connect button + status
+- [x] Prisma migration applied (OAuthState + CalendarConnection)
+- [x] Encryption in `@calsync/shared` (AES-256-GCM), ENCRYPTION_KEY required
+- [x] OAuth start (returns redirectUrl) / callback working locally
+- [x] Refresh token stored encrypted
+- [x] GET /integrations/google connection status endpoint
+- [x] Web settings/integrations page with connect button + status
+- [x] Worker smoke:decrypt script to verify decrypt
